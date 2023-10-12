@@ -82,88 +82,145 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 df = pd.read_csv('BasketAll4.csv')
-df['GP'] = df['GP'].astype(int)
-df['Min'] = df['Min'].astype(int)
-##New Plot
+df['PM_2'] = df['PM_2'].astype(float)
+df['PM_3'] = df['PM_3'].astype(float)
+df['FTM'] = df['FTM'].astype(float)
+#
+# # # 1 New Plot
 # top_10_GP = df.nlargest(10, 'GP')
 # df2 = top_10_GP
 # print(top_10_GP)
 # Player = df2['Player']
 # GP = df2['GP']
-#
+# plt.figure(figsize=(10, 8))
 # plt.plot(Player,GP, label='linija', color='blue', linestyle ='--', marker = 'o')
 #
 # plt.legend()
 # plt.xlabel('x')
-# plt.xticks(rotation=90)
-# plt.xticks(f)
+# plt.xticks(rotation=25)
 # plt.xlabel('y')
-# plt.title('TOP')
+# plt.title('TOP_game_play')
 # plt.show()
 
-#New Hist
-# top_min_players = df.nlargest(10, 'Min')
-# print(top_min_players)
-# df3 = top_min_players
-# Player = df3['Player']
-# Min = df3['Min']
+## 2 New Hist Top 2 points players vs 3 points
+# # Extract the top ten players based on '2PM'
+# top_10_players2 = df.nlargest(10, 'PM_2')
 #
-# plt.hist(df3,  bins=20, label = "Min", color='purple',alpha = 0.7, edgecolor = 'black' )
+# # Extract the 'Player', '2PM', and '3PM' values of the top ten players
+# players = top_10_players2['Player']
+# twopointers_made = top_10_players2['PM_2']
+# threepointers_made = top_10_players2['PM_3']
 #
-# plt.legend()
+# # Create a stacked bar chart for the top ten players
+# plt.bar(players, twopointers_made, label='2-Pointers Made', color='skyblue')
+# plt.bar(players, threepointers_made, bottom=twopointers_made, label='3-Pointers Made', color='limegreen')
+#
+# # Customize the plot
+# plt.title('Top 10 Players - 2-Pointers and 3-Pointers Made')
 # plt.xlabel('Player')
-# plt.ylabel('Min')
+# plt.ylabel('Number of Made Shots')
+# plt.legend()
+#
+# # Rotate x-axis labels for better readability
 # plt.xticks(rotation=90)
-# plt.rcParams['xtick.labelsize'] = 2
-# plt.title('Top min players')
+#
+# # Show the plot
 # plt.show()
 
-
+# ## 3 All players pts MIN MAX Median and AVG
+# plt.figure(figsize=(8, 6))  # Optional: Set the figure size
+# plt.boxplot(df['PTS'], vert=False)
 #
-df['PTS'] = df['PTS'].astype(float)
-top_PTS = df.nlargest(10, 'PTS')
-print(top_PTS)
-df4 = top_PTS
-Player = df4['Player']
-PTS = df4['PTS']
-GP= df4['GP']
-Min = df4['Min']
-plt.style.use('_mpl-gallery')
+# # Calculate and display the statistics
+# max_points = df['PTS'].max()
+# min_points = df['PTS'].min()
+# median_points = df['PTS'].median()
+# avg_points = df['PTS'].mean()
+#
+# # Annotate the plot with statistics
+# plt.text(max_points, 1, f'Max: {max_points}', va='center')
+# plt.text(min_points, 1, f'Min: {min_points}', va='center')
+# plt.text(median_points, 1.2, f'Median: {median_points}', va='center')
+# plt.text(avg_points, 0.8, f'Avg: {avg_points:.2f}', va='center')
+#
+# plt.title(' Points Max, Min, Median, and Average')
+# plt.xlabel('Points')
+# plt.show()
 
-# make data
-x = np.arange(0, 10, 2)
-ay = ['PTS']
-by = ['GP']
-cy = ['Min']
-y = np.vstack([ay, by, cy])
+#4 TOP 10 palyers PTS
+# top_10_players = df.nlargest(10, 'PTS')
+#
+# # Extract the 'PTS' values and player names of the top ten players
+# pts = top_10_players['PTS']
+# players = top_10_players['Player']
+# plt.figure(figsize=(20, 20))
+# # Create a horizontal histogram (bar chart) for the top ten players
+# plt.barh(players, pts, color='skyblue')
+#
+# for player, pt in zip(players, pts):
+#     plt.text(pt, player, str(pt),va='center')
+#
+# # Customize the plot
+# plt.title('Top 10 Players - Points Distribution')
+# plt.xlabel('Points (PTS)')
+# plt.ylabel('Player')
+#
+# # Show the plot
+# plt.show()
 
-# plot
-fig, ax = plt.subplots()
+##5 TOPGP vs losser 2/3
 
-ax.stackplot(x, y)
 
-ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
-       ylim=(0, 8), yticks=np.arange(1, 8))
+top_30_GP = df.nlargest(30, 'GP')
+df2 = top_30_GP
+print(top_30_GP)
+# Extract the losser ten players based on 'PTS'
+top_losser2 = df2.nsmallest(5, 'PTS')
+df3= top_losser2
+# print(top_losser2)
 
+# Extract the 'Player', '2PM', and '3PM' values of the top ten players
+players = top_losser2['Player']
+twopointers_made = top_losser2['PM_2']
+threepointers_made = top_losser2['PM_3']
+
+# Create a stacked bar chart for the top ten players
+plt.bar(players, twopointers_made, label='2-Pointers Made', color='skyblue')
+plt.bar(players, threepointers_made, bottom=twopointers_made, label='3-Pointers Made', color='limegreen')
+
+# Customize the plot
+plt.title('Top 5 lossers - 2-Pointers and 3-Pointers Made')
+plt.xlabel('Player')
+plt.ylabel('Number of Made Shots')
+plt.legend()
+
+# Rotate x-axis labels for better readability
+plt.xticks(rotation=90)
+
+# Show the plot
 plt.show()
 
 
-#palyginti top 10 trikaskiu metikus su 2  rezultatyvumu ( stackplot(x, y)
-# plt.style.use('_mpl-gallery')
-#
+
+##6 all 2/3/F in Pie
+# import numpy as np
 # # make data
-# x = np.arange(0, 10, 2)
-# ay = [1, 1.25, 2, 2.75, 3]
-# by = [1, 1, 1, 1, 1]
-# cy = [2, 1, 2, 1, 2]
-# y = np.vstack([ay, by, cy])
+# sum_2_points = np.sum(df['PM_2'])
+# sum_3_points = np.sum(df['PM_3'])
+# sum_FMT = np.sum(df['FTM'])
+# # print(sum_FMT)
+# plt.figure(figsize=(10, 8))
 #
+# x = [sum_2_points, sum_3_points, sum_FMT]
+# colors = plt.get_cmap('Blues')(np.linspace(0.2, 0.7, len(x)))
 # # plot
-# fig, ax = plt.subplots()
+# labels = ['2Points', '3Points', 'FMT']
+# plt.pie(x, colors=colors, center=(4, 4),
+#        wedgeprops={"linewidth": 1, "edgecolor": "white"}, labels=labels, autopct='%1.1f%%',
+#        startangle=90)
+# # plt.gca().set_aspect('equal')
+# # plt.gca().add_artist(plt.Circle((0,0),0.70,fc='white'))
 #
-# ax.stackplot(x, y)
-#
-# ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
-#        ylim=(0, 8), yticks=np.arange(1, 8))
-#
+# plt.title('2points/3points/FMT Total')
 # plt.show()
+#
